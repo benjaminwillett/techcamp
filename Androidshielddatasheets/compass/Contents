@@ -1,0 +1,3 @@
+Issue with this shield is that it has offset and scaling issues.
+
+Have manualy measured magentic strength in x, y and z coordandtes and fitted it to a unit circle, providng both offset and scaling
