@@ -1,0 +1,187 @@
+#:kivy 1.0.9
+
+<PowerBars>:
+    canvas:
+        Color:
+            rgba: 0,1,0,1
+        Rectangle:
+            pos:self.pos
+            size:self.size
+
+<CompassImage@Image>:
+    source: 'compass.png'
+    size_hint: 4.5,4.5
+    size: 512,512
+    allow_stretch: True
+    canvas.before:
+        PushMatrix
+        Rotate:
+            angle:self.angle
+            axis:0,0,1
+            origin: self.center
+    canvas:
+        Color:
+            rgba: 1,1,1,1
+        Line:
+            rectangle: self.x, self.y, self.width, self.height
+    canvas.after:
+        PopMatrix
+    
+<BatteryImage>:
+    size: 50,50
+    source: self.source
+    pos: 10,10
+<ControllerGUI>:
+    plu: power_left_upper
+    pll: power_left_lower
+    pru: power_right_upper
+    prl: power_right_lower
+    compass: rotating
+    b0: battery0
+    b1: battery1
+    b2: battery2
+    b3: battery3
+    b4: battery4
+    b5: battery5
+    b6: battery6
+    b7: battery7
+    FloatLayout:
+        CompassImage:
+            id: rotating
+            pos: root.width / 2 -self.width/2,root.height / 2-self.height/2
+            angle: self.angle
+    PowerBars:
+        id: power_left_upper
+        size: 50, self.Power
+        pos: root.width/8-25, root.center_y
+    PowerBars:
+        id: power_left_lower
+        size: 50, self.Power
+        pos: root.width/8-25, root.center_y-self.Power
+        
+    PowerBars:
+        id: power_right_upper
+        size: 50, self.Power
+        pos: root.width*7/8-25, root.center_y
+    PowerBars:
+        id: power_right_lower
+        size: 50, self.Power
+        pos: root.width*7/8-25, root.center_y-self.Power
+            
+    Label:
+        font_size: 50  
+        center_x: root.width / 4
+        top: root.top - 20
+        text: str(root.LeftDistance)
+    Label:
+        font_size: 50  
+        center_x: root.width / 2
+        top: root.top - 20
+        text: str(root.ForwardDistance)
+      
+    Label:
+        font_size: 50  
+        center_x: root.width * 3 / 4
+        top: root.top - 20
+        text: str(root.RightDistance)
+    
+    Label:
+        font_size: 70  
+        center_x: root.width / 2
+        bottom:  50
+        text: str(root.Bearing)
+
+    Button:
+        id: stop_button
+        on_press: root.StopButton()
+        center_x: root.width / 2
+        center_y: root.height / 2
+        Image:
+            size: 100,100
+            center_x: root.width / 2
+            center_y: root.height / 2
+            source: 'stop.gif'
+            allow_stretch: True
+    Button:
+        id: up_button
+        on_press: root.ForwardButton()
+        center_x: root.width / 2
+        center_y: root.height / 2 +100
+        Image:
+            size: 100,100
+            center_x: root.width / 2
+            center_y: root.height / 2 +100
+            source: 'UpArrow.png'
+            allow_stretch: True
+    Button:
+        id: down_button
+        on_press: root.BackwardButton()
+        center_x: root.width / 2
+        center_y: root.height / 2 -100
+        Image:
+            size: 100,100
+            center_x: root.width / 2
+            center_y: root.height / 2 -100
+            source: 'DownArrow.png'
+            allow_stretch: True
+    Button:
+        id: right_button
+        on_press: root.RightButton()
+        center_x: root.width / 2 + 100
+        center_y: root.height / 2
+        Image:
+            size: 100,100
+            center_x: root.width / 2 + 100
+            center_y: root.height / 2
+            source: 'RightArrow.png'
+            allow_stretch: True
+    Button:
+        id: left_button
+        on_press: root.LeftButton()
+        center_x: root.width / 2 - 100
+        center_y: root.height / 2
+        Image:
+            size: 100,100
+            center_x: root.width / 2 - 100
+            center_y: root.height / 2
+            source: 'LeftArrow.png'
+            allow_stretch: True
+    BatteryImage:
+        id: battery0
+        size: 50,50
+        source: 'Battery0.png'
+        
+    BatteryImage:
+        id: battery1
+        size: 50,50
+        source: 'Battery1.png'
+     
+    BatteryImage:
+        id: battery2
+        size: 50,50
+        source: 'Battery2.png'
+        
+    BatteryImage:
+        id: battery3
+        size: 50,50
+        source: 'Battery3.png'
+        
+    BatteryImage:
+        id: battery4
+        size: 50,50
+        source: 'Battery4.png'
+        
+    BatteryImage:
+        id: battery5
+        size: 50,50
+        source: 'Battery5.png'
+        
+    BatteryImage:
+        id: battery6
+        size: 50,50
+        source: 'Battery6.png'
+        
+    BatteryImage:
+        id: battery7
+        size: 50,50
+        source: 'Battery7.png'
