@@ -7,7 +7,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle,Color
 from kivy.uix.button import Button
-from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
+from kivy.properties import NumericProperty, StringProperty, ReferenceListProperty, ObjectProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.uix.image import Image
@@ -135,10 +135,16 @@ class robot (object):
         '''provides compass bearings of robot'''
         ret_value=self.SendSignal("c")
         return ret_value
+    def battery(self):
+        '''provides compass bearings of robot'''
+        ret_value=self.SendSignal("v")
+        return ret_value
 class PowerBars(Widget):
     Power = NumericProperty(50)
-class BatteryImage(Widget):
-    pass
+class BatteryImage(Image):
+    source=StringProperty("Battery6.png")
+class BluetoothImage(Image):
+    source=StringProperty("NoBluetooth.png")
 class CompassImage(Image):
     angle=NumericProperty(0)
 class ControllerGUI(Widget):
@@ -152,14 +158,7 @@ class ControllerGUI(Widget):
     pll = ObjectProperty(None)
     prl = ObjectProperty(None)
     compass= ObjectProperty(None)
-    b0 =ObjectProperty(None)
-    b1 =ObjectProperty(None)
-    b2 =ObjectProperty(None)
-    b3 =ObjectProperty(None)
-    b4 =ObjectProperty(None)
-    b5 =ObjectProperty(None)
-    b6 =ObjectProperty(None)
-    b7 =ObjectProperty(None)
+    batimage =ObjectProperty(None)
     def __init__(self):
         super(ControllerGUI, self).__init__()
         print("in __init__")
@@ -167,18 +166,12 @@ class ControllerGUI(Widget):
         self.UpdatePower(0,0)
     def update(self,dt):
         #print("update " + str(self.UpdateIndex))
+        #Go through a couple of states to spread out the update
         if self.UpdateIndex==0:
-            try:
-                RobotReply=self.MyRobot.compass()
-                if RobotReply not in ["Failed\n","Not Connected\n"]: 
-                    self.Bearing=float(RobotReply[2:])
-                    self.compass.angle=float(RobotReply[2:])
-                else:
-                    self.Bearing=0.0
-            except:
-                self.Bearing=0.0
-                #print(self.MyRobot.compass())
+            #Get compass angle
+            self.updateCompass()
         elif self.UpdateIndex==1:
+            #update distance sensors
             try:
                 distance=self.MyRobot.distance()[2:]  #get rid of the D:
                 if distance not in ["Failed\n","Not Connected\n"]: 
@@ -198,12 +191,15 @@ class ControllerGUI(Widget):
                 self.RightDistance=0.0
             #print(self.MyRobot.distance())
         elif self.UpdateIndex==2:
+         #update power
          #   print(self.MyRobot.power())
             self.DecodeReply(self.MyRobot.power())
-        elif self.UpdateIndex>=3:
+        elif self.UpdateIndex==3:
+            self.UpdateBattery()
+        elif self.UpdateIndex>=4:
             self.UpdateIndex=-1
         #print("in update")
-        
+        self.UpdateBluetooth()
         self.UpdateIndex+=1
     def StopButton(self):
         #print("Stop button pressed")
@@ -253,7 +249,39 @@ class ControllerGUI(Widget):
         else:
             self.pru.Power=0
             self.prl.Power=-right
+    def updateCompass(self):
+        try:
+            self.b0.size_element=50
+            RobotReply=self.MyRobot.compass()
+            if RobotReply not in ["Failed\n","Not Connected\n"]: 
+                self.Bearing=float(RobotReply[2:])
+                self.compass.angle=float(RobotReply[2:])
+            else:
+                self.Bearing=0.0
+        except:
+            self.Bearing=0.0
+            #print(self.MyRobot.compass())
+    def UpdateBattery(self):
+        try:
+            RobotReply=self.MyRobot.battery()
+            if RobotReply not in ["Failed\n","Not Connected\n"]: 
+                self.Battery=float(RobotReply[2:])
+                #self.Battery.power=float(RobotReply[2:])
+            else:
+                self.Battery=0.0
+        except:
+            self.Battery=0.0
+            print("Updatebattery call had an error")
+            #print(self.MyRobot.compass())
+        self.batimage.source="battery" + str(int(self.Battery)) + ".png"
+        print("battery returned " + str(self.Battery))
+    def UpdateBluetooth(self):
+        if self.MyRobot.ser!=None:
+            self.blueimage.source="bluetooth.png"
+        else:
+            self.blueimage.source="NoBluetooth.png"
         
+        pass
 class ControllerApp(App):
     def build(self):
         print("getting GUI")

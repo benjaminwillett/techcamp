@@ -27,24 +27,22 @@
     canvas.after:
         PopMatrix
     
-<BatteryImage>:
+<BatteryImage@Image>:
     size: 50,50
-    source: self.source
-    pos: 10,10
+    pos: 10,80
+    source: self.source    
+<BluetoothImage@Image>:
+    size: 50,50
+    pos: self.pos
+    source: self.source    
 <ControllerGUI>:
     plu: power_left_upper
     pll: power_left_lower
     pru: power_right_upper
     prl: power_right_lower
     compass: rotating
-    b0: battery0
-    b1: battery1
-    b2: battery2
-    b3: battery3
-    b4: battery4
-    b5: battery5
-    b6: battery6
-    b7: battery7
+    batimage: battery
+    blueimage: bluetoothstatus
     FloatLayout:
         CompassImage:
             id: rotating
@@ -146,42 +144,12 @@
             center_y: root.height / 2
             source: 'LeftArrow.png'
             allow_stretch: True
-    BatteryImage:
-        id: battery0
-        size: 50,50
-        source: 'Battery0.png'
         
     BatteryImage:
-        id: battery1
-        size: 50,50
-        source: 'Battery1.png'
-     
-    BatteryImage:
-        id: battery2
-        size: 50,50
-        source: 'Battery2.png'
+        id: battery
+        source: self.source
         
-    BatteryImage:
-        id: battery3
-        size: 50,50
-        source: 'Battery3.png'
-        
-    BatteryImage:
-        id: battery4
-        size: 50,50
-        source: 'Battery4.png'
-        
-    BatteryImage:
-        id: battery5
-        size: 50,50
-        source: 'Battery5.png'
-        
-    BatteryImage:
-        id: battery6
-        size: 50,50
-        source: 'Battery6.png'
-        
-    BatteryImage:
-        id: battery7
-        size: 50,50
-        source: 'Battery7.png'
+    BluetoothImage:
+        id: bluetoothstatus
+        source: self.source
+        pos: root.width-80,80
