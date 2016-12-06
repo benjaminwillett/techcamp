@@ -14,6 +14,7 @@ from kivy.uix.image import Image
 
 class robot (object):
     RetryCount=0
+    BatteryVoltage=0.0
     ''' provide container for connection to bluetooth connected robot'''
     def __init__(self):
         '''Searches comm ports on computer and connects to first bluetooth serial port '''
@@ -136,9 +137,8 @@ class robot (object):
         ret_value=self.SendSignal("c")
         return ret_value
     def battery(self):
-        '''provides compass bearings of robot'''
-        ret_value=self.SendSignal("v")
-        return ret_value
+        retval=self.SendSignal("v")
+        return retval
 class PowerBars(Widget):
     Power = NumericProperty(50)
 class BatteryImage(Image):
@@ -159,6 +159,8 @@ class ControllerGUI(Widget):
     prl = ObjectProperty(None)
     compass= ObjectProperty(None)
     batimage =ObjectProperty(None)
+    Battery=0.0
+    
     def __init__(self):
         super(ControllerGUI, self).__init__()
         print("in __init__")
@@ -265,16 +267,23 @@ class ControllerGUI(Widget):
         try:
             RobotReply=self.MyRobot.battery()
             if RobotReply not in ["Failed\n","Not Connected\n"]: 
-                self.Battery=float(RobotReply[2:])
+                #print("about to test")
+                if self.Battery==0.0:
+                    #print("ok it was zero")
+                    self.Battery=float(RobotReply[2:])
+                else:
+                    #print("it was not zeor")
+                    self.Battery=0.1*float(RobotReply[2:])+0.9*self.Battery
                 #self.Battery.power=float(RobotReply[2:])
             else:
-                self.Battery=0.0
+                self.Battery=0.9*self.Battery
         except:
             self.Battery=0.0
             print("Updatebattery call had an error")
             #print(self.MyRobot.compass())
-        self.batimage.source="battery" + str(int(self.Battery)) + ".png"
-        print("battery returned " + str(self.Battery))
+        batteryimageno=str(max(min(int((self.Battery-3.8)*7.0/1.2),7),0))
+        self.batimage.source="battery" + batteryimageno + ".png"
+        print("battery returned " + batteryimageno)
     def UpdateBluetooth(self):
         if self.MyRobot.ser!=None:
             self.blueimage.source="bluetooth.png"

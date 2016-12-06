@@ -1,0 +1,26 @@
+<TargetChar@Label>:
+    Label:
+        font_size: self.font_size  
+        center_x: self.center_x
+        top: self.top
+        text: self.text
+   
+<TouchTyperGUI>:
+    tc1: tc1
+    Label:
+        font_size: 50  
+        center_x: root.width * 1/ 3
+        top: root.top - 20
+        text: str(root.Percentage) + "%"
+    Label:
+        font_size: 50  
+        center_x: root.width * 2/ 3
+        top: root.top - 20
+        text: str(root.Speed) + "wpm"
+    TargetChar:
+        id: tc1
+        font_size: 50
+        center_x:root.width / 2
+        top: self.location
+        text: self.char
+
