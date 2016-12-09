@@ -270,7 +270,7 @@ class ControllerGUI(Widget):
                 #print("about to test")
                 if self.Battery==0.0:
                     #print("ok it was zero")
-                    self.Battery=float(RobotReply[2:])
+                    self.Battery=2*float(RobotReply[2:])
                 else:
                     #print("it was not zeor")
                     self.Battery=0.1*float(RobotReply[2:])+0.9*self.Battery
@@ -298,8 +298,6 @@ class ControllerApp(App):
         Clock.schedule_interval(GUI.update, 1.0)
         print("returning")
         return GUI
-    def StopButton(self):
-        print("ControllerApp stop pressed")
 class PowerBar(Widget):
     Power = NumericProperty(50)
     
